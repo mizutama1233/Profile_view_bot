@@ -29,7 +29,7 @@ for link in userJson['props']['pageProps']['profile']['profileLinks']:
         "profile_image_id": None,
         "link_type": link['profileLinkType'],
         "link_title": link['buttonLink']['title'],
-        "link_url": "",
+        "link_url": link['buttonLink']['url'],
     })
 
 print('ikima-su')
