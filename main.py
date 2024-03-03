@@ -1,8 +1,8 @@
-from concurrent.futures import ThreadPoolExecutor
 from bs4 import BeautifulSoup
 import requests, json, random
 
-devices = ["desktop"]
+devices = ["desktop", "mobile", "tablet", "other"]
+referrals = ["youtube.com", "dicord.com", "twitter.com", "instagram.com", "facebook.com", "github.com", "note.com", "gmail.com", "telegram.org", "とっきーﾅﾏｽﾃ", "kap210"]
 headers = {
     "accept": "application/json, text/plain, */*",
     "accept-language": "ja,en-US;q=0.9,en;q=0.8",
@@ -32,22 +32,25 @@ for link in userJson['props']['pageProps']['profile']['profileLinks']:
         "link_url": "",
     })
 
-body = {
-    "user_id": userJson['props']['pageProps']['profile']['userId'],
-    "creator_id": userJson['props']['pageProps']['profile']['creatorId'],
-    "device": "desktop", # random.choice(devices),
-    "referral": "",
-    "links": linkList,
-    "url_path": name
-}
-
 print('ikima-su')
 success = 0
 failed = 0
 while True:
-    r = requests.post("https://prd.api.lit.link/v1/access_logs/view_type_access_logs", json=body, headers=headers)
-    if r.status_code == 200:
-        success +=1
-    else:
-        failed += 1
-    print(f"\rsuccess: {success} failed: {failed}", end="")
+    try:
+        body = {
+            "user_id": userJson['props']['pageProps']['profile']['userId'],
+            "creator_id": userJson['props']['pageProps']['profile']['creatorId'],
+            "device": random.choice(devices),
+            "referral": random.choice(referrals),
+            "links": linkList,
+            "url_path": name
+        }
+
+        r = requests.post("https://prd.api.lit.link/v1/access_logs/view_type_access_logs", json=body, headers=headers)
+        if r.status_code == 200:
+            success +=1
+        else:
+            failed += 1
+        print(f"\rsuccess: {success} failed: {failed}", end="")
+    except KeyboardInterrupt as e:
+        break
