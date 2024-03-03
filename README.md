@@ -2,4 +2,9 @@
 
 `pip install requests`
 
-# やること：
+### やること：
+- [] マルチスレッド
+- [] クリック数
+
+( *´艸｀)
+https://discord.gg/haihu
