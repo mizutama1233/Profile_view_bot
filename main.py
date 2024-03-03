@@ -44,14 +44,10 @@ body = {
 print('ikima-su')
 success = 0
 failed = 0
-def send():
+while True:
     r = requests.post("https://prd.api.lit.link/v1/access_logs/view_type_access_logs", json=body, headers=headers)
     if r.status_code == 200:
         success +=1
     else:
         failed += 1
     print(f"\rsuccess: {success} failed: {failed}", end="")
-
-tpe = ThreadPoolExecutor(max_workers=5)
-
-tpe.submit(send)
