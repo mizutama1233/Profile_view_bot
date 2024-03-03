@@ -32,7 +32,6 @@ for link in userJson['props']['pageProps']['profile']['profileLinks']:
         "link_url": link['buttonLink']['url'],
     })
 
-print('ikima-su')
 success = 0
 failed = 0
 while True:
