@@ -1,8 +1,8 @@
 from bs4 import BeautifulSoup
-import requests, json, random
+import requests, json, random, threading, time
 
 devices = ["desktop", "mobile", "tablet", "other"]
-referrals = ["youtube.com", "dicord.com", "twitter.com", "instagram.com", "facebook.com", "github.com", "note.com", "gmail.com", "telegram.org", "とっきーﾅﾏｽﾃ", "kap210"]
+referrals = ["youtube.com", "discord.com", "twitter.com", "instagram.com", "facebook.com", "github.com", "note.com", "gmail.com", "telegram.org", "とっきーﾅﾏｽﾃ", "kap210"]
 headers = {
     "accept": "application/json, text/plain, */*",
     "accept-language": "ja,en-US;q=0.9,en;q=0.8",
@@ -34,7 +34,9 @@ for link in userJson['props']['pageProps']['profile']['profileLinks']:
 
 success = 0
 failed = 0
-while True:
+
+def send_request():
+    global success, failed
     try:
         body = {
             "user_id": userJson['props']['pageProps']['profile']['userId'],
@@ -47,9 +49,14 @@ while True:
 
         r = requests.post("https://prd.api.lit.link/v1/access_logs/view_type_access_logs", json=body, headers=headers)
         if r.status_code == 200:
-            success +=1
+            success += 1
         else:
             failed += 1
         print(f"\rsuccess: {success} failed: {failed}", end="")
     except KeyboardInterrupt as e:
-        break
+        pass
+
+while True:
+    thread = threading.Thread(target=send_request)
+    thread.start()
+    time.sleep(0.05)
