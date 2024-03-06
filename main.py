@@ -22,41 +22,49 @@ document = requests.get(f"https://lit.link/{name}", headers={"content-type": "ap
 soup = BeautifulSoup(document.text, 'lxml')
 userJson = json.loads(soup.find(id="__NEXT_DATA__").text)
 
-linkList = []
-for link in userJson['props']['pageProps']['profile']['profileLinks']:
-    linkList.append({
-        "link_id": link['id'],
-        "profile_image_id": None,
-        "link_type": link['profileLinkType'],
-        "link_title": link['buttonLink']['title'],
-        "link_url": link['buttonLink']['url'],
-    })
+def alive():
+    if userJson["props"]["pageProps"]["metadata"]["description"] == "undefined":
+        return False
+    else:
+        return True
 
-success = 0
-failed = 0
-
-def send_request():
-    global success, failed
+if alive():
     try:
-        body = {
-            "user_id": userJson['props']['pageProps']['profile']['userId'],
-            "creator_id": userJson['props']['pageProps']['profile']['creatorId'],
-            "device": random.choice(devices),
-            "referral": random.choice(referrals),
-            "links": linkList,
-            "url_path": name
-        }
+        linkList = []
+        for link in userJson['props']['pageProps']['profile']['profileLinks']:
+            linkList.append({
+                "link_id": link['id'],
+                "profile_image_id": None,
+                "link_type": link['profileLinkType'],
+                "link_title": link['buttonLink']['title'],
+                "link_url": link['buttonLink']['url'],
+            })
 
-        r = requests.post("https://prd.api.lit.link/v1/access_logs/view_type_access_logs", json=body, headers=headers)
-        if r.status_code == 200:
-            success += 1
-        else:
-            failed += 1
-        print(f"\rsuccess: {success} failed: {failed}", end="")
+        success = 0
+        failed = 0
+
+        def send_request():
+            global success, failed
+            body = {
+                "user_id": userJson['props']['pageProps']['profile']['userId'],
+                "creator_id": userJson['props']['pageProps']['profile']['creatorId'],
+                "device": random.choice(devices),
+                "referral": random.choice(referrals),
+                "links": linkList,
+                "url_path": name
+            }
+
+            r = requests.post("https://prd.api.lit.link/v1/access_logs/view_type_access_logs", json=body, headers=headers)
+            if r.status_code == 200:
+                success += 1
+            else:
+                failed += 1
+            print(f"\rsuccess: {success} failed: {failed}", end="")
+
+        while True:
+            thread = threading.Thread(target=send_request)
+            thread.start()
+            time.sleep(0.05)
     except KeyboardInterrupt as e:
-        pass
-
-while True:
-    thread = threading.Thread(target=send_request)
-    thread.start()
-    time.sleep(0.05)
+            pass
+else: input("ユーザーが見つかりませんでした。")
