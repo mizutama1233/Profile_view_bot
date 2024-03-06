@@ -29,8 +29,10 @@ def alive():
         return True
 
 if alive():
+    linkList = []
+    success = 0
+    failed = 0
     try:
-        linkList = []
         for link in userJson['props']['pageProps']['profile']['profileLinks']:
             linkList.append({
                 "link_id": link['id'],
@@ -39,9 +41,6 @@ if alive():
                 "link_title": link['buttonLink']['title'],
                 "link_url": link['buttonLink']['url'],
             })
-
-        success = 0
-        failed = 0
 
         def send_request():
             global success, failed
@@ -55,15 +54,13 @@ if alive():
             }
 
             r = requests.post("https://prd.api.lit.link/v1/access_logs/view_type_access_logs", json=body, headers=headers)
-            if r.status_code == 200:
-                success += 1
-            else:
-                failed += 1
+            if r.status_code == 200: success += 1
+            else: failed += 1
+
             print(f"\rsuccess: {success} failed: {failed}", end="")
 
         while True:
-            thread = threading.Thread(target=send_request)
-            thread.start()
+            threading.Thread(target=send_request).start()
             time.sleep(0.05)
     except KeyboardInterrupt as e:
             pass
