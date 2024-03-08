@@ -1,6 +1,6 @@
 # lit.link-view-bot
 
-`pip install requests bs4`
+`pip install requests bs4 lxml`
 
 止めるときはウィンドウ消すか `ctrl + c` で終了できる
 
