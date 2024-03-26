@@ -1,4 +1,4 @@
-# lit.link-view-bot
+# Prolife view bot
 
 `pip install requests bs4 lxml`
 
